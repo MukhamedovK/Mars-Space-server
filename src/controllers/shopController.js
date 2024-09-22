@@ -1,6 +1,5 @@
 const Products = require("../models/ProductModel");
 const Student = require("../models/studentModel");
-const ProductCode = require("../models/ProductCodeModel");
 
 
 const buyProduct = async (req, res) => {

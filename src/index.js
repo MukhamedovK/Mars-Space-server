@@ -1,19 +1,25 @@
 require("dotenv").config();
 const express = require("express");
+const bodyParser = require('body-parser')
 const cors = require("cors");
 
 const connectDB = require("./config/database");
 const shopRouter = require('./routes/shopRouter');
-const productsRouter = require('./routes/productsRouter'); 
+const productsRouter = require('./routes/productsRouter');
+const postsRouter = require('./routes/postsRouter')
 
 const app = express();
-app.use(express.json());
+app.use(bodyParser.json({ limit: "30mb", extended: true }))
+app.use(bodyParser.urlencoded({ limit: "30mb", extended: true }))
 app.use(cors());
+
 
 connectDB();
 
-app.use('/api/v1/shop', shopRouter)
-app.use('/api/v1/products', productsRouter)
+app.use('/api/v1/shop', shopRouter);
+app.use('/api/v1/products', productsRouter);
+app.use('/api/v1/posts', postsRouter); 
+
 
 
 const PORT = process.env.PORT || 5000;

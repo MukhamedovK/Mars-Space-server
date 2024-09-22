@@ -27,7 +27,7 @@ const buyProduct = async (req, res) => {
 
     res.status(200).json({
       message: `You have successfully purchased a ${product.title}`,
-      coins: `Your coins: ${student.coin}`,
+      coins: `Your coins: ${student.coinBalance}`,
     });
   } catch (error) {
     console.log("Error: ", error);

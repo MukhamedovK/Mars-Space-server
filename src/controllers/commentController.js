@@ -28,8 +28,7 @@ const getCommentById = async (req, res) => {
 };
 
 const createComment = async (req, res) => {
-  const { student } = req.params;
-  const { text, post } = req.body;
+  const { text, post, student } = req.body;
   try {
     const newComment = new Comment({ text, post, student });
     await newComment.save();

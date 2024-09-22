@@ -6,8 +6,8 @@ const auth = require('../middleware/auth');
 router.get('/', getPosts);
 router.get('/search', getPostsBySearch)
 router.post('/', createPost);
-router.patch('/:id', auth, updatePost);
-router.delete('/:id', auth, deletePost);
-router.patch('/:id/likePost', auth, likePost);
+router.patch('/:id', updatePost);
+router.delete('/:id', deletePost);
+router.patch('/:id/likePost', likePost);
 
 module.exports = router;

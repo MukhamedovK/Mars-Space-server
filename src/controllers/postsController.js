@@ -13,35 +13,33 @@ const getPosts = async (req, res) => {
 
 const getPostsBySearch = async (req, res) => {
     const { searchQuery, tags } = req.query;
-  
+
     try {
-      const title = new RegExp(searchQuery, 'i'); // 'i' makes it case-insensitive
-      const posts = await PostMessage.find({
-        $or: [{ title }, { tags: { $in: tags.split(',') } }] // Search by title or tags
-      });
-  
-      res.json({ data: posts });
+        const title = new RegExp(searchQuery, 'i'); // 'i' makes it case-insensitive
+        const posts = await PostMessage.find({
+            $or: [{ title }, { tags: { $in: tags.split(',') } }] // Search by title or tags
+        });
+
+        res.json({ data: posts });
     } catch (error) {
-      res.status(404).json({ message: error.message });
+        res.status(404).json({ message: error.message });
     }
-  };
-  
+};
+
 
 
 const createPost = async (req, res) => {
     const post = req.body;
 
-    // if (!req.userId) return res.status(401).json({ message: "Unauthenticated" });
-
-    const newPostMessage = new PostMessage({ ...post, creator: req.userId, createdAt: new Date().toISOString() });
     try {
-        await newPostMessage.save();
-        res.status(201).json(newPostMessage);
+        const newPost = new PostMessage(post);
+        await newPost.save();
+        res.status(201).json(newPost); // Successfully created
     } catch (error) {
-        res.status(409).json({ message: error.message });
+        console.error(error); // Logs error in the server console
+        res.status(500).json({ message: 'Something went wrong.' }); // Return a proper error message
     }
 };
-
 const getPost = async (req, res) => {
     const { id } = req.params;
 

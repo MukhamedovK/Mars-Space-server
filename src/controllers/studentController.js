@@ -61,7 +61,7 @@ const getAllStudents = async (req, res) => {
 // Update student
 const updateStudent = async (req, res) => {
   const { id } = req.params;
-  const { name, surname, teacher, group } = req.body;
+  const { name, surname, teacher, group, } = req.body;
 
   try {
     const student = await StudentSchema.findByIdAndUpdate(

@@ -1,6 +1,7 @@
 const StudentSchema = require("../models/studentModel");
 const AuthSchema = require("../models/authModel");
 
+// Create student (Registration)
 const RegisterStudent = async (req, res) => {
   const { name, surname, login, password, teacher, group } = req.body;
 
@@ -27,12 +28,78 @@ const RegisterStudent = async (req, res) => {
       student: savedStudent,
     });
   } catch (error) {
-    res
-      .status(400)
-      .json({ error: "Registration failed", details: error.message });
+    res.status(400).json({ error: "Registration failed", details: error.message });
   }
 };
 
+// Read (Get one student)
+const getStudent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const student = await StudentSchema.findById(id);
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.status(200).json(student);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get student", details: error.message });
+  }
+};
+
+// Read (Get all students)
+const getAllStudents = async (req, res) => {
+  try {
+    const students = await StudentSchema.find();
+    res.status(200).json(students);
+  } catch (error) {
+    res.status(500).json({ error: "Failed to get students", details: error.message });
+  }
+};
+
+// Update student
+const updateStudent = async (req, res) => {
+  const { id } = req.params;
+  const { name, surname, teacher, group } = req.body;
+
+  try {
+    const student = await StudentSchema.findByIdAndUpdate(
+      id,
+      { name, surname, teacher, group },
+      { new: true, runValidators: true }
+    );
+
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    res.status(200).json({ message: "Student updated successfully", student });
+  } catch (error) {
+    res.status(400).json({ error: "Failed to update student", details: error.message });
+  }
+};
+
+// Delete student
+const deleteStudent = async (req, res) => {
+  const { id } = req.params;
+
+  try {
+    const student = await StudentSchema.findByIdAndDelete(id);
+    if (!student) {
+      return res.status(404).json({ error: "Student not found" });
+    }
+
+    // Also delete the corresponding Auth entry
+    await AuthSchema.findOneAndDelete({ studentId: id });
+
+    res.status(200).json({ message: "Student deleted successfully" });
+  } catch (error) {
+    res.status(500).json({ error: "Failed to delete student", details: error.message });
+  }
+};
+
+// Login student
 const LoginStudent = async (req, res) => {
   const { login, password } = req.body;
 
@@ -65,4 +132,11 @@ const LoginStudent = async (req, res) => {
   }
 };
 
-module.exports = { RegisterStudent, LoginStudent };
+module.exports = {
+  RegisterStudent,
+  getStudent,
+  getAllStudents,
+  updateStudent,
+  deleteStudent,
+  LoginStudent,
+};

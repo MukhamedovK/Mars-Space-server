@@ -2,7 +2,7 @@ const Comment = require("../models/CommentModel");
 
 const getComments = async (req, res) => {
   try {
-    const comments = await Comment.find();
+    const comments = await Comment.find().populate('student').populate('post');
     if (!comments.length) {
       return res.status(404).json({ message: "Comments not found" });
     }
@@ -16,7 +16,7 @@ const getComments = async (req, res) => {
 const getCommentById = async (req, res) => {
   const { id } = req.params;
   try {
-    const comment = await Comment.findById(id);
+    const comment = await Comment.findById(id).populate('student').populate('post');
     if (!comment) {
       return res.status(404).json({ message: "Comment not found" });
     }
@@ -30,7 +30,7 @@ const getCommentById = async (req, res) => {
 const createComment = async (req, res) => {
   const { text, post, student } = req.body;
   try {
-    const newComment = new Comment({ text, post, student });
+    const newComment = new Comment({ text, student, post });
     await newComment.save();
     res
       .status(201)
